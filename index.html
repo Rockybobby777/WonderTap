@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🍄 WonderTap - The Trippy Tap Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- TRIPPY BACKGROUND -->
+    <div class="trippy-bg">
+        <div class="wave-distortion"></div>
+        <div class="psychedelic-pulse"></div>
+        <div class="floating-elements" id="floatingElements"></div>
+    </div>
+    
+    <!-- LUCKY BOX -->
+    <div class="lucky-box" id="luckyBox" onclick="Game.openLuckyBox()">🎁</div>
+    
+    <!-- APP CONTAINER -->
+    <div class="app">
+        <!-- HEADER -->
+        <div class="header">
+            <div class="logo">🍄 WonderTap</div>
+            <div class="header-spacer"></div>
+            <div class="currencies">
+                <div class="currency wontime" onclick="UI.showTooltip('wontime')" title="Your total score!">
+                    <span class="currency-emoji">🐰🕰️</span>
+                    <span id="wontimeDisplay">0</span>
+                </div>
+                <div class="currency coins" onclick="UI.showTooltip('coins')" title="Spend in Shop & Games">
+                    <span class="currency-emoji">🪙</span>
+                    <span id="coinsDisplay">0</span>
+                </div>
+                <div class="currency gems" onclick="UI.showTooltip('gems')" title="Buy rare items">
+                    <span class="currency-emoji">💎</span>
+                    <span id="gemsDisplay">5</span>
+                </div>
+            </div>
+            <div class="header-spacer"></div>
+            <button class="header-btn" onclick="UI.openModal('settingsModal')">⚙️</button>
+        </div>
+        
+        <!-- Currency Tooltip -->
+        <div class="currency-tooltip" id="currencyTooltip"></div>
+        
+        <!-- INFO BAR -->
+        <div class="info-bar">
+            <div class="level-section">
+                <div class="level-badge">LV.<span id="levelDisplay">1</span></div>
+                <div class="xp-bar"><div class="xp-fill" id="xpFill" style="width:0%"></div></div>
+            </div>
+            <div class="streak-badge" onclick="UI.openModal('streakModal')">🔥 <span id="streakDisplay">0</span></div>
+            <div class="hourly-timer ready" id="hourlyTimer" onclick="Game.claimHourly()">🎁 <span id="hourlyText">Ready!</span></div>
+        </div>
+        
+        <!-- ===== HOME PAGE ===== -->
+        <div class="page active" id="homePage">
+            <div class="page-content">
+                <!-- BIG WONTIME DISPLAY (Compact) -->
+                <div class="wontime-big-display-compact" onclick="UI.showWontimeInfo()">
+                    <span class="wontime-icon">🐰🕰️</span>
+                    <span class="wontime-value" id="wontimeBigDisplay">0</span>
+                    <span class="wontime-label">WONTIME</span>
+                </div>
+                
+                <!-- Quick Actions (Compact) -->
+                <div class="quick-grid compact">
+                    <div class="quick-btn-mini glow" onclick="UI.openModal('streakModal')">
+                        <span class="icon">🎁</span>
+                        <span class="label">Daily</span>
+                    </div>
+                    <div class="quick-btn-mini" onclick="UI.showPage('wheelPage')">
+                        <span class="icon">🎡</span>
+                        <span class="label">Wheel</span>
+                    </div>
+                    <div class="quick-btn-mini" onclick="BattlePass.open()">
+                        <span class="icon">🎫</span>
+                        <span class="label">Pass</span>
+                    </div>
+                    <div class="quick-btn-mini" onclick="UI.showPage('leaderboardPage')">
+                        <span class="icon">🏆</span>
+                        <span class="label">Rank</span>
+                    </div>
+                </div>
+                
+                <!-- Cheshire Eyes -->
+                
+                <!-- Cheshire Eyes -->
+                <div class="cheshire-section" id="cheshireSection">
+                    <div class="cheshire-eye" id="cheshireEye1"><div class="cheshire-pupil" id="cheshirePupil1"></div></div>
+                    <div class="cheshire-eye" id="cheshireEye2"><div class="cheshire-pupil" id="cheshirePupil2"></div></div>
+                    <div class="cheshire-smile" id="cheshireSmile">😸</div>
+                </div>
+                
+                <!-- TAP ZONE -->
+                <div class="tap-zone" id="tapZone">
+                    <div class="smoke-container" id="smokeContainer"></div>
+                    <div class="combo-display" id="comboDisplay">COMBO x<span id="comboVal">0</span></div>
+                    
+                    <!-- The Caterpillar -->
+                    <div class="caterpillar" id="caterpillar">
+                        <svg viewBox="0 0 280 280">
+                            <defs>
+                                <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#a855f7"/>
+                                    <stop offset="50%" stop-color="#7c3aed"/>
+                                    <stop offset="100%" stop-color="#5b21b6"/>
+                                </linearGradient>
+                                <linearGradient id="bodyLight" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="rgba(255,255,255,0.3)"/>
+                                    <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+                                </linearGradient>
+                                <linearGradient id="mushGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="#ef4444"/>
+                                    <stop offset="100%" stop-color="#b91c1c"/>
+                                </linearGradient>
+                                <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                                <filter id="shadow"><feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="rgba(0,0,0,0.3)"/></filter>
+                            </defs>
+                            <!-- Shadow -->
+                            <ellipse cx="140" cy="265" rx="80" ry="12" fill="rgba(0,0,0,0.3)"/>
+                            <!-- Mushroom -->
+                            <ellipse cx="140" cy="260" rx="60" ry="12" fill="#4a3728"/>
+                            <path d="M120 260 L120 205 Q120 195 130 195 L150 195 Q160 195 160 205 L160 260" fill="#f5f0e6" filter="url(#shadow)"/>
+                            <ellipse cx="140" cy="195" rx="55" ry="28" fill="url(#mushGrad)" filter="url(#shadow)"/>
+                            <circle cx="115" cy="188" r="9" fill="#fff" opacity="0.9"/>
+                            <circle cx="145" cy="180" r="11" fill="#fff" opacity="0.9"/>
+                            <circle cx="168" cy="190" r="7" fill="#fff" opacity="0.85"/>
+                            <!-- Body -->
+                            <g filter="url(#glow)">
+                                <ellipse cx="140" cy="160" rx="36" ry="28" fill="url(#bodyGrad)"/>
+                                <ellipse cx="140" cy="130" rx="32" ry="24" fill="url(#bodyGrad)"/>
+                                <ellipse cx="140" cy="102" rx="28" ry="21" fill="url(#bodyGrad)"/>
+                                <ellipse cx="140" cy="72" rx="30" ry="25" fill="url(#bodyGrad)"/>
+                            </g>
+                            <!-- Eyes -->
+                            <ellipse cx="128" cy="68" rx="11" ry="9" fill="#fff"/>
+                            <ellipse cx="152" cy="68" rx="11" ry="9" fill="#fff"/>
+                            <ellipse id="caterpillarPupil1" cx="130" cy="70" rx="5" ry="5" fill="#1a1a2e"/>
+                            <ellipse id="caterpillarPupil2" cx="154" cy="70" rx="5" ry="5" fill="#1a1a2e"/>
+                            <circle cx="127" cy="66" r="2" fill="#fff"/>
+                            <circle cx="151" cy="66" r="2" fill="#fff"/>
+                            <!-- Sleepy lids -->
+                            <ellipse cx="128" cy="64" rx="11" ry="5" fill="url(#bodyGrad)"/>
+                            <ellipse cx="152" cy="64" rx="11" ry="5" fill="url(#bodyGrad)"/>
+                            <!-- Blush -->
+                            <ellipse cx="115" cy="78" rx="6" ry="3" fill="#f472b6" opacity="0.5"/>
+                            <ellipse cx="165" cy="78" rx="6" ry="3" fill="#f472b6" opacity="0.5"/>
+                            <!-- Smile -->
+                            <path d="M132 85 Q140 93 148 85" stroke="#5b21b6" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                            <!-- Antennae -->
+                            <path d="M130 50 Q122 30 112 25" stroke="#7c3aed" stroke-width="3" fill="none"/>
+                            <path d="M150 50 Q158 30 168 25" stroke="#7c3aed" stroke-width="3" fill="none"/>
+                            <circle cx="112" cy="25" r="6" fill="#ef4444"/>
+                            <circle cx="168" cy="25" r="6" fill="#3b82f6"/>
+                            <!-- Hookah -->
+                            <ellipse cx="185" cy="162" rx="16" ry="9" fill="#f59e0b"/>
+                            <rect x="181" y="130" width="8" height="28" fill="#d4a000"/>
+                            <ellipse cx="185" cy="128" rx="11" ry="7" fill="#dc2626"/>
+                            <circle cx="185" cy="122" r="3" fill="#fbbf24"><animate attributeName="opacity" values="0.6;1;0.6" dur="0.7s" repeatCount="indefinite"/></circle>
+                            <path d="M178 145 Q158 132 156 95" stroke="#92400e" stroke-width="5" fill="none"/>
+                            <ellipse cx="156" cy="93" rx="5" ry="3" fill="#fbbf24"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Energy/Fever Bars -->
+            <div class="bars-section">
+                <div class="bar-row">
+                    <span class="bar-icon">⚡</span>
+                    <div class="bar-container">
+                        <div class="bar-fill energy" id="energyFill" style="width:100%"></div>
+                        <span class="bar-text" id="energyText">1000/1000</span>
+                    </div>
+                </div>
+                <div class="bar-row">
+                    <span class="bar-icon">🔥</span>
+                    <div class="bar-container">
+                        <div class="bar-fill fever" id="feverFill" style="width:0%"></div>
+                        <span class="bar-text">FEVER</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ===== WHEEL PAGE ===== -->
+        <div class="page wheel-page" id="wheelPage">
+            <div class="page-content">
+                <div class="wheel-header">
+                    <div class="wheel-title">🎡 FORTUNE WHEEL</div>
+                    <div class="wheel-subtitle">Spin to win trippy prizes!</div>
+                </div>
+                
+                <div class="wheel-wrapper">
+                    <div class="wheel-outer-ring"></div>
+                    <div class="wheel-pointer">▼</div>
+                    <div class="wheel" id="wheel"></div>
+                    <div class="wheel-center">🍄</div>
+                </div>
+                
+                <div class="wheel-actions">
+                    <button class="spin-btn" id="spinBtn" onclick="Wheel.spin()">SPIN!</button>
+                    <div class="spins-info">
+                        <span>Spins:</span>
+                        <span class="spins-count" id="spinsCount">3</span>
+                    </div>
+                    <div class="get-spins-row">
+                        <button class="ad-spin-btn" onclick="Wheel.watchAdForSpin()">
+                            👁️ Watch Ad (+1)
+                            <span id="adsLeftWheel">20/20</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ===== SHOP PAGE ===== -->
+        <div class="page" id="shopPage">
+            <div class="page-header">
+                <h2 class="page-title">🛒 SHOP</h2>
+                <p class="page-subtitle">Buy & equip items!</p>
+            </div>
+            <div class="shop-tabs" id="shopTabs"></div>
+            <div class="shop-content">
+                <div class="shop-section active" id="shop-skins"></div>
+                <div class="shop-section" id="shop-backgrounds"></div>
+                <div class="shop-section" id="shop-effects"></div>
+                <div class="shop-section" id="shop-boosts"></div>
+                <div class="shop-section" id="shop-premium"></div>
+            </div>
+        </div>
+        
+        <!-- ===== QUESTS PAGE ===== -->
+        <div class="page" id="questsPage">
+            <div style="padding: 15px; text-align: center;">
+                <h2 style="font-family: 'Bangers', cursive; color: var(--cyan);">📋 QUESTS</h2>
+                <p style="opacity: 0.7; font-size: 0.85rem;">Complete quests to earn rewards!</p>
+            </div>
+            <div id="questsList" style="padding: 0 15px;"></div>
+        </div>
+        
+        <!-- ===== GAMES PAGE ===== -->
+        <div class="page" id="gamesPage">
+            <div class="page-header">
+                <h2 class="page-title" style="color: var(--pink);">🎮 MINI GAMES</h2>
+                <p class="page-subtitle">Play to win bonus rewards!</p>
+            </div>
+            
+            <!-- Events Section -->
+            <div style="padding: 0 15px; margin-bottom: 15px;">
+                <div class="events-section-header">
+                    <div class="events-section-title">🎪 Active Events</div>
+                </div>
+                <div id="eventsSection"></div>
+            </div>
+            
+            <!-- Mini Games Grid -->
+            <div class="minigames-grid">
+                <!-- Scratch Card -->
+                <div class="minigame-card" onclick="MiniGames.openScratchCard()">
+                    <div class="minigame-icon">🎫</div>
+                    <div class="minigame-name">Scratch Card</div>
+                    <div class="minigame-desc">Scratch to reveal prizes!</div>
+                    <div class="minigame-cost">🪙 500</div>
+                </div>
+                
+                <!-- Slot Machine -->
+                <div class="minigame-card" onclick="MiniGames.openSlots()">
+                    <div class="minigame-icon">🎰</div>
+                    <div class="minigame-name">Slot Machine</div>
+                    <div class="minigame-desc">Match symbols to win!</div>
+                    <div class="minigame-cost">🪙 200 / spin</div>
+                </div>
+                
+                <!-- Rabbit Slide -->
+                <div class="minigame-card" onclick="SlideGame.open()">
+                    <div class="minigame-icon">🐰</div>
+                    <div class="minigame-name">Rabbit Slide</div>
+                    <div class="minigame-desc">Dodge obstacles!</div>
+                    <div class="minigame-cost">🪙 500</div>
+                </div>
+                
+                <!-- Card Flip -->
+                <div class="minigame-card" onclick="CardFlip.open()">
+                    <div class="minigame-icon">🃏</div>
+                    <div class="minigame-name">Card Flip</div>
+                    <div class="minigame-desc">Find matching pairs!</div>
+                    <div class="minigame-cost">🪙 300</div>
+                </div>
+                
+                <!-- Magic 8 Ball -->
+                <div class="minigame-card" onclick="MiniGames.openMagic8Ball()">
+                    <div class="minigame-icon">🎱</div>
+                    <div class="minigame-name">Magic 8 Ball</div>
+                    <div class="minigame-desc">Ask a question!</div>
+                    <div class="minigame-cost">FREE</div>
+                </div>
+                
+                <!-- Coin Flip -->
+                <div class="minigame-card" onclick="MiniGames.openCoinFlip()">
+                    <div class="minigame-icon">🪙</div>
+                    <div class="minigame-name">Coin Flip</div>
+                    <div class="minigame-desc">Double or nothing!</div>
+                    <div class="minigame-cost">🪙 100+</div>
+                </div>
+                
+                <!-- Lucky Dice -->
+                <div class="minigame-card" onclick="MiniGames.openDice()">
+                    <div class="minigame-icon">🎲</div>
+                    <div class="minigame-name">Lucky Dice</div>
+                    <div class="minigame-desc">Roll for prizes!</div>
+                    <div class="minigame-cost">🪙 150</div>
+                </div>
+                
+                <!-- Treasure Hunt -->
+                <div class="minigame-card" onclick="MiniGames.openTreasureHunt()">
+                    <div class="minigame-icon">🗺️</div>
+                    <div class="minigame-name">Treasure Hunt</div>
+                    <div class="minigame-desc">Find the treasure!</div>
+                    <div class="minigame-cost">🪙 400</div>
+                </div>
+            </div>
+            
+            <!-- High Scores Section -->
+            <div style="padding: 15px;">
+                <div style="font-weight: 700; margin-bottom: 10px;">🏆 Your High Scores</div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                    <div style="background: var(--card); padding: 12px; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 1.5rem;">🐰</div>
+                        <div style="font-size: 0.75rem; opacity: 0.7;">Rabbit Slide</div>
+                        <div id="slideHighScoreDisplay" style="font-weight: 700; color: var(--gold);">0</div>
+                    </div>
+                    <div style="background: var(--card); padding: 12px; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 1.5rem;">🃏</div>
+                        <div style="font-size: 0.75rem; opacity: 0.7;">Card Flip</div>
+                        <div id="cardFlipHighScoreDisplay" style="font-weight: 700; color: var(--gold);">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ===== LEADERBOARD PAGE ===== -->
+        <div class="page" id="leaderboardPage">
+            <div style="padding: 15px; text-align: center;">
+                <h2 style="font-family: 'Bangers', cursive; color: var(--gold);">🏆 LEADERBOARD</h2>
+            </div>
+            <div id="leaderboardContent" style="padding: 0 15px;"></div>
+        </div>
+        
+        <!-- ===== INVEST/UPGRADE PAGE ===== -->
+        <div class="page" id="investPage">
+            <div style="padding: 15px; text-align: center;">
+                <h2 style="font-family: 'Bangers', cursive; color: var(--cyan);">📈 UPGRADES</h2>
+                <p style="opacity: 0.7; font-size: 0.85rem;">Boost your earnings permanently!</p>
+            </div>
+            <div id="upgradesList" style="padding: 0 15px;"></div>
+        </div>
+        
+        <!-- ===== FRIENDS PAGE ===== -->
+        <div class="page" id="friendsPage">
+            <div style="padding: 20px; text-align: center; background: linear-gradient(180deg, rgba(255,0,255,0.1), transparent);">
+                <h2 style="font-family: 'Bangers', cursive; color: var(--pink);">👥 INVITE FRIENDS</h2>
+                <p style="opacity: 0.8;">Per friend: 🪙 2,000 + 💎 15</p>
+            </div>
+            
+            <!-- Referral Bonus (if available) -->
+            <div id="referralRewardSection" style="display: none; margin: 15px; padding: 15px; background: linear-gradient(135deg, rgba(0,255,136,0.2), rgba(0,200,100,0.1)); border: 2px solid var(--green); border-radius: 15px; text-align: center;">
+                <div style="font-size: 2rem;">🎁</div>
+                <div style="font-weight: 700; color: var(--green);">Welcome Bonus!</div>
+                <button onclick="claimReferralBonus()" style="margin-top: 10px; padding: 12px 25px; background: var(--green); border: none; border-radius: 20px; color: #000; font-weight: 700; cursor: pointer;">Claim +2,000🪙 +15💎</button>
+            </div>
+            
+            <!-- Stats -->
+            <div style="margin: 15px; padding: 15px; background: var(--card); border-radius: 15px; display: flex; justify-content: space-around; text-align: center;">
+                <div>
+                    <div style="font-size: 2rem; font-weight: 800; color: var(--gold);" id="referralCount">0</div>
+                    <div style="font-size: 0.75rem; opacity: 0.7;">Friends Invited</div>
+                </div>
+                <div>
+                    <div style="font-size: 2rem; font-weight: 800; color: var(--cyan);" id="referralEarnings">0</div>
+                    <div style="font-size: 0.75rem; opacity: 0.7;">Coins Earned</div>
+                </div>
+            </div>
+            
+            <!-- Share Link -->
+            <div style="margin: 15px; padding: 20px; background: var(--card); border: 2px dashed var(--pink); border-radius: 15px; text-align: center;">
+                <div style="font-size: 3rem;">🔗</div>
+                <p style="font-weight: 700;">Your Invite Link</p>
+                <div id="referralLinkDisplay" style="background: rgba(0,0,0,0.5); padding: 10px; border-radius: 10px; margin: 10px 0; font-size: 0.7rem; word-break: break-all;">t.me/WonderTapBot?start=ref_123</div>
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <button onclick="copyReferralLink()" style="padding: 12px 25px; background: linear-gradient(135deg, var(--purple), var(--pink)); border: none; border-radius: 25px; color: white; font-weight: 700; cursor: pointer;">📋 Copy</button>
+                    <button onclick="shareReferralLink()" style="padding: 12px 25px; background: linear-gradient(135deg, var(--cyan), var(--green)); border: none; border-radius: 25px; color: #000; font-weight: 700; cursor: pointer;">📤 Share</button>
+                </div>
+            </div>
+            
+            <!-- How It Works -->
+            <div style="margin: 15px; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 15px; font-size: 0.85rem; line-height: 1.8;">
+                <div style="font-weight: 700; margin-bottom: 8px;">How it works:</div>
+                1️⃣ Share your link<br>
+                2️⃣ Friends join WonderTap<br>
+                3️⃣ You both get rewards! 🎉
+            </div>
+        </div>
+        
+        <!-- ===== PROFILE PAGE ===== -->
+        <div class="page" id="profilePage">
+            <div style="padding: 20px; text-align: center; background: linear-gradient(180deg, rgba(147,51,234,0.3), transparent);">
+                <div style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--purple), var(--pink)); border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; border: 3px solid var(--gold);" id="profileAvatar">🐛</div>
+                <h2 style="font-family: 'Bangers', cursive; color: var(--gold);" id="profileName">Player</h2>
+                <div style="display: flex; justify-content: center; gap: 5px; align-items: center;">
+                    <span style="background: linear-gradient(135deg, var(--purple), var(--pink)); padding: 3px 12px; border-radius: 15px; font-size: 0.8rem;">Level <span id="profileLevel">1</span></span>
+                </div>
+            </div>
+            
+            <!-- Stats -->
+            <div style="padding: 15px;">
+                <div style="font-weight: 700; margin-bottom: 10px;">📊 Statistics</div>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                    <div style="background: var(--card); padding: 15px; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: 800; color: var(--gold);" id="profileCoins">0</div>
+                        <div style="font-size: 0.75rem; opacity: 0.7;">Total Coins</div>
+                    </div>
+                    <div style="background: var(--card); padding: 15px; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: 800; color: var(--cyan);" id="profileTaps">0</div>
+                        <div style="font-size: 0.75rem; opacity: 0.7;">Total Taps</div>
+                    </div>
+                    <div style="background: var(--card); padding: 15px; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: 800; color: var(--pink);" id="profileCombo">0</div>
+                        <div style="font-size: 0.75rem; opacity: 0.7;">Best Combo</div>
+                    </div>
+                    <div style="background: var(--card); padding: 15px; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: 800; color: var(--orange);" id="profileStreak">0</div>
+                        <div style="font-size: 0.75rem; opacity: 0.7;">Best Streak</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Equipped Items -->
+            <div style="padding: 0 15px 15px;">
+                <div style="font-weight: 700; margin-bottom: 10px;">🎨 Equipped Items</div>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                    <div style="background: var(--card); padding: 15px; border-radius: 12px; text-align: center; cursor: pointer;" onclick="UI.showPage('shopPage'); Shop.showTab('skins');">
+                        <div style="font-size: 2rem;" id="equippedSkin">🐛</div>
+                        <div style="font-size: 0.7rem; opacity: 0.7;">Skin</div>
+                    </div>
+                    <div style="background: var(--card); padding: 15px; border-radius: 12px; text-align: center; cursor: pointer;" onclick="UI.showPage('shopPage'); Shop.showTab('backgrounds');">
+                        <div style="font-size: 2rem;" id="equippedBg">🌙</div>
+                        <div style="font-size: 0.7rem; opacity: 0.7;">Background</div>
+                    </div>
+                    <div style="background: var(--card); padding: 15px; border-radius: 12px; text-align: center; cursor: pointer;" onclick="UI.showPage('shopPage'); Shop.showTab('effects');">
+                        <div style="font-size: 2rem;" id="equippedEffect">⭐</div>
+                        <div style="font-size: 0.7rem; opacity: 0.7;">Effect</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Inventory -->
+            <div style="padding: 0 15px 15px;">
+                <div style="font-weight: 700; margin-bottom: 10px;">🎒 Inventory</div>
+                <div style="display: flex; gap: 10px;">
+                    <div style="flex: 1; background: var(--card); padding: 12px; border-radius: 12px; text-align: center;">
+                        <span id="ownedSkinsCount">1</span> Skins
+                    </div>
+                    <div style="flex: 1; background: var(--card); padding: 12px; border-radius: 12px; text-align: center;">
+                        <span id="ownedBgCount">1</span> Backgrounds
+                    </div>
+                    <div style="flex: 1; background: var(--card); padding: 12px; border-radius: 12px; text-align: center;">
+                        <span id="ownedEffectsCount">1</span> Effects
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Actions -->
+            <div style="padding: 0 15px 100px;">
+                <button onclick="UI.openModal('settingsModal')" style="width: 100%; padding: 15px; background: var(--card); border: none; border-radius: 12px; color: white; font-weight: 600; cursor: pointer; margin-bottom: 10px;">
+                    ⚙️ Settings
+                </button>
+                <button onclick="shareProfile()" style="width: 100%; padding: 15px; background: linear-gradient(135deg, var(--pink), var(--purple)); border: none; border-radius: 12px; color: white; font-weight: 600; cursor: pointer;">
+                    📤 Share Profile
+                </button>
+            </div>
+        </div>
+        
+        <!-- BOTTOM NAV (brighter icons) -->
+        <div class="bottom-nav">
+            <button class="nav-btn active" data-page="homePage" onclick="UI.showPage('homePage')">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">Home</span>
+            </button>
+            <button class="nav-btn" data-page="shopPage" onclick="UI.showPage('shopPage')">
+                <span class="nav-icon">🛒</span>
+                <span class="nav-label">Shop</span>
+            </button>
+            <button class="nav-btn" data-page="gamesPage" onclick="UI.showPage('gamesPage')">
+                <span class="nav-icon">🎮</span>
+                <span class="nav-label">Games</span>
+            </button>
+            <button class="nav-btn" data-page="profilePage" onclick="UI.showPage('profilePage'); updateProfilePage();">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Profile</span>
+            </button>
+            <button class="nav-btn" data-page="friendsPage" onclick="UI.showPage('friendsPage')">
+                <span class="nav-icon">👥</span>
+                <span class="nav-label">Friends</span>
+            </button>
+        </div>
+    </div>
+    
+    <!-- ===== MODALS ===== -->
+    
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal" style="max-height: 80vh; overflow-y: auto;">
+            <div class="modal-header">
+                <span class="modal-title">⚙️ Settings</span>
+                <button class="modal-close" onclick="UI.closeModal('settingsModal')">✕</button>
+            </div>
+            
+            <!-- Audio Controls -->
+            <div class="audio-controls">
+                <div class="audio-control-row">
+                    <div class="audio-control-label">🎵 Music</div>
+                    <div class="audio-toggle" id="musicToggle" onclick="toggleMusic()"></div>
+                </div>
+                <div class="audio-control-row">
+                    <div class="audio-control-label">🔊 Sound FX</div>
+                    <div class="audio-toggle" id="sfxToggle" onclick="toggleSFX()"></div>
+                </div>
+            </div>
+            
+            <!-- Replay Tutorial -->
+            <button onclick="Tutorial.reset(); UI.closeModal('settingsModal');" style="width: 100%; margin-top: 15px; padding: 12px; background: rgba(255,255,255,0.1); border: none; border-radius: 12px; color: white; font-weight: 600; cursor: pointer;">
+                📖 Replay Tutorial
+            </button>
+            
+            <!-- DEV MODE BUTTON -->
+            <button onclick="Game.devMode(); UI.closeModal('settingsModal');" style="width: 100%; margin-top: 10px; padding: 12px; background: linear-gradient(135deg, #ff6b35, #ff0080); border: none; border-radius: 12px; color: white; font-weight: 700; cursor: pointer;">
+                🔧 DEV MODE - Unlock All!
+            </button>
+            
+            <!-- Version -->
+            <div style="margin-top: 15px; text-align: center; opacity: 0.4; font-size: 0.7rem;">
+                WonderTap v4.0 🍄
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide Game Modal -->
+    <div class="modal-overlay" id="slideGameModal">
+        <div class="modal" style="padding: 10px; max-width: 380px;">
+            <div class="modal-header" style="margin-bottom: 10px;">
+                <span class="modal-title">🐰 Rabbit Slide</span>
+                <button class="modal-close" onclick="SlideGame.end(); UI.closeModal('slideGameModal')">✕</button>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 5px 10px; background: rgba(0,0,0,0.3); border-radius: 10px; margin-bottom: 10px; font-size: 0.85rem;">
+                <div>❤️ <span id="slideLives">3</span></div>
+                <div>Score: <span id="slideScore" style="color: var(--gold); font-weight: 700;">0</span></div>
+                <div>🪙 <span id="slideCoins">0</span></div>
+                <div>💎 <span id="slideGems">0</span></div>
+            </div>
+            <div id="slideGameContainer" style="display: flex; justify-content: center;"></div>
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button onclick="SlideGame.togglePause()" style="flex: 1; padding: 10px; background: rgba(255,255,255,0.1); border: none; border-radius: 10px; color: white; font-weight: 600; cursor: pointer;">
+                    ⏸️ Pause
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scratch Card Modal -->
+    <div class="modal-overlay" id="scratchModal">
+        <div class="modal" style="text-align: center;">
+            <div class="modal-header">
+                <span class="modal-title">🎫 Scratch Card</span>
+                <button class="modal-close" onclick="UI.closeModal('scratchModal')">✕</button>
+            </div>
+            <div style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 10px;">
+                Scratch all cells to reveal prizes! (<span id="scratchRemaining">9</span> remaining)
+            </div>
+            <div id="scratchCardGrid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px;"></div>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="MiniGames.scratchAll()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, var(--pink), var(--purple)); border: none; border-radius: 12px; color: white; font-weight: 700; cursor: pointer;">
+                    Scratch All
+                </button>
+                <button onclick="UI.closeModal('scratchModal')" style="flex: 1; padding: 12px; background: rgba(255,255,255,0.1); border: none; border-radius: 12px; color: white; font-weight: 600; cursor: pointer;">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slots Modal -->
+    <div class="modal-overlay" id="slotsModal">
+        <div class="modal" style="text-align: center;">
+            <div class="modal-header">
+                <span class="modal-title">🎰 Slot Machine</span>
+                <button class="modal-close" onclick="UI.closeModal('slotsModal')">✕</button>
+            </div>
+            <div id="slotsContainer" style="background: linear-gradient(135deg, #2d1b4e, #1a0030); border: 4px solid var(--gold); border-radius: 20px; padding: 20px; margin-bottom: 15px;">
+                <div id="slotsDisplay" style="display: flex; justify-content: center; gap: 10px; font-size: 3rem; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 10px;">
+                    <span id="slot1">🍒</span>
+                    <span id="slot2">🍋</span>
+                    <span id="slot3">🍊</span>
+                </div>
+            </div>
+            <div style="font-size: 0.85rem; opacity: 0.7; margin-bottom: 15px;">
+                Match 3 symbols to win! 🍄🍄🍄 = JACKPOT!
+            </div>
+            <button onclick="MiniGames.spinSlots()" style="width: 100%; padding: 15px; background: linear-gradient(135deg, var(--gold), #b8860b); border: none; border-radius: 12px; color: white; font-weight: 700; font-size: 1.1rem; cursor: pointer;">
+                🎰 SPIN (🪙 200)
+            </button>
+        </div>
+    </div>
+    
+    <!-- Card Flip Modal -->
+    <div class="modal-overlay" id="cardFlipModal">
+        <div class="modal" style="text-align: center; max-width: 380px;">
+            <div class="modal-header">
+                <span class="modal-title">🃏 Card Flip</span>
+                <button class="modal-close" onclick="UI.closeModal('cardFlipModal')">✕</button>
+            </div>
+            <div id="cardFlipContent"></div>
+        </div>
+    </div>
+    
+    <!-- Streak Modal -->
+    <div class="modal-overlay" id="streakModal" style="z-index: 1500;">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">🔥 Daily Streak</span>
+                <button class="modal-close" onclick="UI.closeModal('streakModal')">✕</button>
+            </div>
+            <div style="text-align: center; margin-bottom: 15px;">
+                <div style="opacity: 0.8;">Current Streak</div>
+                <div style="font-size: 3.5rem; font-weight: 800; color: var(--orange);" id="streakModalDisplay">0</div>
+                <div style="opacity: 0.6;">days in a row!</div>
+            </div>
+            <div id="streakCalendar" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-bottom: 15px;"></div>
+            <button id="claimStreakBtn" onclick="Game.claimStreak(); return false;" style="width: 100%; padding: 15px; background: linear-gradient(135deg, var(--pink), var(--purple)); border: none; border-radius: 15px; color: white; font-weight: 700; font-size: 1rem; cursor: pointer; position: relative; z-index: 10;">
+                Claim Day <span id="claimDayNum">1</span> Reward!
+            </button>
+        </div>
+    </div>
+    
+    <!-- Result Modal -->
+    <div class="modal-overlay" id="resultModal" style="z-index: 2000;">
+        <div class="modal" style="text-align: center;">
+            <div id="resultIcon" style="font-size: 5rem; margin-bottom: 15px;">🎉</div>
+            <div id="resultTitle" style="font-family: 'Bangers', cursive; font-size: 2rem; color: var(--gold);">YOU WON!</div>
+            <div id="resultValue" style="font-size: 2.5rem; font-weight: 700; margin: 15px 0;">+1,000 🪙</div>
+            <button onclick="UI.closeResult()" style="padding: 15px 50px; background: linear-gradient(135deg, var(--green), #00cc6a); border: none; border-radius: 25px; color: #000; font-weight: 700; font-size: 1.1rem; cursor: pointer;">Collect!</button>
+        </div>
+    </div>
+    
+    <!-- Level Up Modal -->
+    <div class="modal-overlay" id="levelupModal" style="z-index: 3000;">
+        <div class="modal" style="text-align: center; background: transparent; border: none; box-shadow: none;">
+            <div style="font-family: 'Bangers', cursive; font-size: 2.5rem; background: linear-gradient(135deg, var(--gold), var(--pink), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">LEVEL UP!</div>
+            <div id="levelupNum" style="font-size: 6rem; font-weight: 800; text-shadow: 0 0 50px var(--gold), 0 0 100px var(--pink);">2</div>
+            <div style="color: var(--green); font-size: 1.2rem;">+1 Tap Power! 🎉</div>
+        </div>
+    </div>
+    
+    <!-- SCRIPTS -->
+    <script src="data.js"></script>
+    <script src="ui.js"></script>
+    <script src="i18n.js"></script>
+    <script src="wheel.js"></script>
+    <script src="shop.js"></script>
+    <script src="quests.js"></script>
+    <script src="leaderboard.js"></script>
+    <script src="events.js"></script>
+    <script src="minigames.js"></script>
+    <script src="slide-game.js"></script>
+    <script src="card-flip.js"></script>
+    <script src="battlepass.js"></script>
+    <script src="notifications.js"></script>
+    <script src="tutorial.js"></script>
+    <script src="telegram.js"></script>
+    <script src="audio.js"></script>
+    <script src="backend.js"></script>
+    <script src="interactions.js"></script>
+    <script src="game.js"></script>
+    <script>
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize effects
+            if (typeof Effects !== 'undefined') Effects.createFloatingElements();
+            
+            // Initialize game
+            if (typeof Game !== 'undefined') Game.init();
+            
+            // Initialize audio
+            if (typeof Audio !== 'undefined' && Audio.init) Audio.init();
+            
+            // Initialize language selector
+            if (typeof I18n !== 'undefined') {
+                I18n.init();
+                I18n.renderLanguageSelector('languageSelector');
+            }
+            
+            // Initialize wheel
+            if (typeof Wheel !== 'undefined') Wheel.init();
+        });
+        
+        // Audio toggle functions
+        function toggleMusic() {
+            const toggle = document.getElementById('musicToggle');
+            if (typeof Audio !== 'undefined' && Audio.toggleMusic) {
+                const isEnabled = Audio.toggleMusic();
+                if (toggle) {
+                    if (isEnabled) {
+                        toggle.classList.add('active');
+                    } else {
+                        toggle.classList.remove('active');
+                    }
+                }
+            }
+        }
+        
+        function toggleSFX() {
+            const toggle = document.getElementById('sfxToggle');
+            if (typeof Audio !== 'undefined' && Audio.toggleSFX) {
+                const isEnabled = Audio.toggleSFX();
+                if (toggle) {
+                    if (isEnabled) {
+                        toggle.classList.add('active');
+                    } else {
+                        toggle.classList.remove('active');
+                    }
+                }
+            }
+        }
+        
+        // Sync toggles with audio state on load
+        function syncAudioToggles() {
+            if (typeof Audio !== 'undefined') {
+                const musicToggle = document.getElementById('musicToggle');
+                const sfxToggle = document.getElementById('sfxToggle');
+                
+                if (musicToggle) {
+                    if (Audio.settings.musicEnabled) {
+                        musicToggle.classList.add('active');
+                    } else {
+                        musicToggle.classList.remove('active');
+                    }
+                }
+                
+                if (sfxToggle) {
+                    if (Audio.settings.sfxEnabled) {
+                        sfxToggle.classList.add('active');
+                    } else {
+                        sfxToggle.classList.remove('active');
+                    }
+                }
+            }
+        }
+        
+        // Call sync after a short delay to ensure Audio is loaded
+        setTimeout(syncAudioToggles, 500);
+    </script>
+</body>
+</html>
